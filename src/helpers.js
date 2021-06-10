@@ -3,7 +3,7 @@ import { isObject } from './util'
 /**
  * Reduce the code which written in Vue.js for getting the state.
  * @param {String} [namespace] - Module's namespace
- * @param {Object|Array} states # Object's item can be a function which accept state and getters for param, you can do something for state and getters in it.
+ * @param {Object|Array} states - Store中的state到Vue实例computed属性的转换关系映射 # Object's item can be a function which accept state and getters for param, you can do something for state and getters in it.
  * @param {Object}
  */
 export const mapState = normalizeNamespace((namespace, states) => {
@@ -11,8 +11,8 @@ export const mapState = normalizeNamespace((namespace, states) => {
   if (__DEV__ && !isValidMap(states)) {
     console.error('[vuex] mapState: mapper parameter must be either an Array or an Object')
   }
-  normalizeMap(states).forEach(({ key, val }) => {
-    res[key] = function mappedState () {
+  normalizeMap(states).forEach(({ key, val }) => { // 遍历states中的属性，key为Vue实例computed属性的属性名，val为函数时表示Store的state到computed的转换关系，val为字符串时表示Store的state中的属性名
+    res[key] = function mappedState () { // 该函数为Vue实例computed的key属性的值
       let state = this.$store.state
       let getters = this.$store.getters
       if (namespace) {
@@ -30,7 +30,7 @@ export const mapState = normalizeNamespace((namespace, states) => {
     // mark vuex getter for devtools
     res[key].vuex = true
   })
-  return res
+  return res // 返回states中，key与能获得对应值的Function的映射
 })
 
 /**

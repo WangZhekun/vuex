@@ -21,8 +21,8 @@ export class Store {
     }
 
     const {
-      plugins = [],
-      strict = false
+      plugins = [], // 插件
+      strict = false // 严格模式，任何不是由mutation 函数引起的状态变更，都报错
     } = options
 
     // store internal state
