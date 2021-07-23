@@ -25,27 +25,38 @@ export default class ModuleCollection {
     update([], this.root, rawRootModule)
   }
 
+  /**
+   * 注册模块
+   * @param {string[]} path 模块的路径
+   * @param {Object} rawModule 模块的配置对象
+   * @param {boolean} runtime 是否为运行时
+   */
   register (path, rawModule, runtime = true) {
     if (__DEV__) {
       assertRawModule(path, rawModule)
     }
 
-    const newModule = new Module(rawModule, runtime)
+    const newModule = new Module(rawModule, runtime) // 模块对象
     if (path.length === 0) {
-      this.root = newModule
+      this.root = newModule // 根模块
     } else {
       const parent = this.get(path.slice(0, -1))
-      parent.addChild(path[path.length - 1], newModule)
+      parent.addChild(path[path.length - 1], newModule) // 维护模块树
     }
 
-    // register nested modules
+    // register nested modules 注册子模块
     if (rawModule.modules) {
-      forEachValue(rawModule.modules, (rawChildModule, key) => {
-        this.register(path.concat(key), rawChildModule, runtime)
+      forEachValue(rawModule.modules, (rawChildModule, key) => { // key为子模块名，为子模块配置对象
+        this.register(path.concat(key), rawChildModule, runtime) // 注册子模块
       })
     }
   }
 
+  /**
+   * 取消注册
+   * @param {string[]} path 模块路径
+   * @returns 
+   */
   unregister (path) {
     const parent = this.get(path.slice(0, -1))
     const key = path[path.length - 1]

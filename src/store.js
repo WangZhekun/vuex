@@ -31,7 +31,7 @@ export class Store {
     this._actionSubscribers = []
     this._mutations = Object.create(null)
     this._wrappedGetters = Object.create(null)
-    this._modules = new ModuleCollection(options)
+    this._modules = new ModuleCollection(options) // 模块
     this._modulesNamespaceMap = Object.create(null)
     this._subscribers = []
     this._watcherVM = new Vue()
@@ -40,14 +40,14 @@ export class Store {
     // bind commit and dispatch to self
     const store = this
     const { dispatch, commit } = this
-    this.dispatch = function boundDispatch (type, payload) {
+    this.dispatch = function boundDispatch (type, payload) { // dispatch用来分发action TODO 这里为什么要重新绑定一次？？？
       return dispatch.call(store, type, payload)
     }
-    this.commit = function boundCommit (type, payload, options) {
+    this.commit = function boundCommit (type, payload, options) { // commit用来提交 mutation TODO 这里为什么要重新绑定一次？？？
       return commit.call(store, type, payload, options)
     }
 
-    // strict mode
+    // strict mode 严格模式
     this.strict = strict
 
     const state = this._modules.root.state
@@ -61,10 +61,10 @@ export class Store {
     // (also registers _wrappedGetters as computed properties)
     resetStoreVM(this, state)
 
-    // apply plugins
+    // apply plugins 应用插件
     plugins.forEach(plugin => plugin(this))
 
-    const useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools
+    const useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools // 开发者工具
     if (useDevtools) {
       devtoolPlugin(this)
     }
